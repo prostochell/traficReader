@@ -1,0 +1,76 @@
+module top (
+    input wire clk,              // System clock
+    input wire reset,            // Asynchronous reset
+    input wire spi_clk,          // SPI clock
+    input wire spi_mosi,         // SPI Master-Out Slave-In
+    input wire spi_ss,           // SPI Slave Select
+    output wire hsync,           // Horizontal sync output
+    output wire vsync,           // Vertical sync output
+    output wire [3:0] red,       // Red video signal
+    output wire [3:0] green,     // Green video signal
+    output wire [3:0] blue       // Blue video signal
+);
+
+    wire [9:0] pixel_x;
+    wire [9:0] pixel_y;
+    wire [7:0] char_code;
+    wire [3:0] char_row;
+    wire [7:0] char_data;
+    wire [7:0] spi_data;
+    wire spi_data_ready;
+
+    // SPI receiver instance
+    spi_receiver spi_inst (
+        .clk(clk),
+        .reset(reset),
+        .spi_clk(spi_clk),
+        .spi_mosi(spi_mosi),
+        .spi_ss(spi_ss),
+        .data_out(spi_data),
+        .data_ready(spi_data_ready)
+    );
+
+    // Character ROM instance
+    char_rom char_rom_inst (
+        .char(char_code),
+        .row(char_row),
+        .data(char_data)
+    );
+
+    // VGA controller instance
+    vga_controller vga_inst (
+        .clk(clk),
+        .reset(reset),
+        .hsync(hsync),
+        .vsync(vsync),
+        .pixel_x(pixel_x),
+        .pixel_y(pixel_y)
+    );
+
+    // Buffer to store received SPI data
+    reg [7:0] char_buffer [0:79];  // Assume an 80-character width for simplicity
+    integer i;
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            for (i = 0; i < 80; i = i + 1) begin
+                char_buffer[i] <= 8'h20; // Initialize with space character
+            end
+        end else if (spi_data_ready) begin
+            for (i = 79; i > 0; i = i - 1) begin
+                char_buffer[i] <= char_buffer[i-1];
+            end
+            char_buffer[0] <= spi_data; // Store new SPI data at the start of the buffer
+        end
+    end
+
+    // Character data and position
+    assign char_code = char_buffer[pixel_x / 8];
+    assign char_row = pixel_y[3:0];
+
+    // Video signal generation
+    assign red   = (char_data[pixel_x[2:0]]) ? 4'hF : 4'h0;
+    assign green = (char_data[pixel_x[2:0]]) ? 4'hF : 4'h0;
+    assign blue  = (char_data[pixel_x[2:0]]) ? 4'hF : 4'h0;
+
+endmodule
