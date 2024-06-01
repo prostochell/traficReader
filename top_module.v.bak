@@ -1,0 +1,41 @@
+module top_module (
+    input wire clk,
+    output wire hsync,
+    output wire vsync,
+    output wire [2:0] rgb,
+    output wire mosi,
+    output wire sck,
+    output wire ss
+);
+
+    reg [7:0] spi_data = 8'hF3; // Example data to send
+    reg start = 0;
+    wire done;
+
+    always @(posedge clk) begin
+        if (done) begin
+            start <= 0;
+        end else begin
+            start <= 1;
+        end
+    end
+
+    spi_master spi_unit (
+        .clk(clk),
+        .start(start),
+        .data_to_send(spi_data),
+        .mosi(mosi),
+        .sck(sck),
+        .ss(ss),
+        .done(done)
+    );
+
+    vga_display display_unit (
+        .clk(clk),
+        .spi_data(spi_data),
+        .hsync(hsync),
+        .vsync(vsync),
+        .rgb(rgb)
+    );
+
+endmodule

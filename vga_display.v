@@ -1,68 +1,57 @@
 module vga_display (
     input wire clk,
-    input wire rst,
+    input wire [7:0] spi_data,
+    input wire new_data,
     output wire hsync,
     output wire vsync,
-    output wire [3:0] red,
-    output wire [3:0] green,
-    output wire [3:0] blue,
-    input wire [7:0] char_data,
-    input wire data_valid
+    output wire [2:0] rgb
 );
-    reg [9:0] h_cnt;
-    reg [9:0] v_cnt;
-    reg [7:0] char;
+
+    wire clk_25mhz;
+    clk_divider divider(
+        .clk_in(clk),
+        .clk_out(clk_25mhz)
+    );
+
+    wire video_on;
+    wire [9:0] x, y;
+
+    vga_sync sync_unit (
+        .clk(clk_25mhz),
+        .hsync(hsync),
+        .vsync(vsync),
+        .video_on(video_on),
+        .x(x),
+        .y(y)
+    );
+
     reg [3:0] row;
-    reg [3:0] col;
+    wire [7:0] pixels;
 
-    localparam H_SYNC_PULSE = 96;
-    localparam H_BACK_PORCH = 48;
-    localparam H_ACTIVE = 640;
-    localparam H_FRONT_PORCH = 16;
-    localparam H_TOTAL = 800;
-    localparam V_SYNC_PULSE = 2;
-    localparam V_BACK_PORCH = 33;
-    localparam V_ACTIVE = 480;
-    localparam V_FRONT_PORCH = 10;
-    localparam V_TOTAL = 525;
+    font_rom font_unit (
+        .char({4'b0000, char}),
+        .row(row),
+        .pixels(pixels)
+    );
 
-    assign hsync = (h_cnt < H_SYNC_PULSE) ? 0 : 1;
-    assign vsync = (v_cnt < V_SYNC_PULSE) ? 0 : 1;
-    assign red = (char != 8'h20) ? 4'b1111 : 4'b0000;
-    assign green = (char != 8'h20) ? 4'b1111 : 4'b0000;
-    assign blue = (char != 8'h20) ? 4'b1111 : 4'b0000;
+    reg [7:0] text_buffer [0:79]; // Буфер для одной строки, длина 80 символов
+    reg [6:0] write_pointer; // Указатель записи в буфер
+    reg [7:0] prev_spi_data; // Предыдущие данные
+    reg [3:0] char;
 
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            h_cnt <= 0;
-            v_cnt <= 0;
-            row <= 0;
-            col <= 0;
-            char <= 8'h20;
-        end else begin
-            if (h_cnt < H_TOTAL - 1)
-                h_cnt <= h_cnt + 1;
-            else begin
-                h_cnt <= 0;
-                if (v_cnt < V_TOTAL - 1)
-                    v_cnt <= v_cnt + 1;
-                else
-                    v_cnt <= 0;
-            end
+    always @(posedge clk_25mhz) begin
+        if (new_data && (spi_data != prev_spi_data)) begin
+            text_buffer[write_pointer] <= spi_data;
+            write_pointer <= (write_pointer + 1) % 80; // Инкремент указателя
+            prev_spi_data <= spi_data; // Обновляем предыдущие данные
+        end
 
-            if (data_valid) begin
-                if (char_data == 8'h0A) begin
-                    col <= 0;
-                    row <= row + 1;
-                end else begin
-                    char <= char_data;
-                    col <= col + 1;
-                    if (col == 79) begin
-                        col <= 0;
-                        row <= row + 1;
-                    end
-                end
-            end
+        if (video_on) begin
+            char <= text_buffer[x[6:3]]; // Получаем символ из буфера
+            row <= y[3:0];
         end
     end
+
+    assign rgb = (video_on && pixels[7 - x[2:0]]) ? 3'b111 : 3'b000;
+
 endmodule

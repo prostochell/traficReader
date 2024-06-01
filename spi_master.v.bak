@@ -1,0 +1,51 @@
+module spi_master (
+    input wire clk,
+    input wire start,
+    input wire [7:0] data_to_send,
+    output reg mosi,
+    output wire sck,
+    output reg ss,
+    output reg done
+);
+
+    reg [2:0] bit_count;
+    reg [7:0] shift_reg;
+    reg [1:0] state;
+    
+    localparam IDLE = 2'b00,
+               TRANSFER = 2'b01,
+               DONE = 2'b10;
+
+    assign sck = clk;
+
+    always @(posedge clk) begin
+        case (state)
+            IDLE: begin
+                done <= 1'b0;
+                ss <= 1'b1;
+                if (start) begin
+                    state <= TRANSFER;
+                    bit_count <= 3'b111;
+                    shift_reg <= data_to_send;
+                    ss <= 1'b0;
+                end
+            end
+            
+            TRANSFER: begin
+                mosi <= shift_reg[bit_count];
+                if (bit_count == 3'b000) begin
+                    state <= DONE;
+                end else begin
+                    bit_count <= bit_count - 1;
+                end
+            end
+            
+            DONE: begin
+                done <= 1'b1;
+                ss <= 1'b1;
+                state <= IDLE;
+            end
+        endcase
+    end
+
+endmodule

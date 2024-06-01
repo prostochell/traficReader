@@ -1,0 +1,32 @@
+module font_rom (
+    input wire [7:0] char,
+    input wire [3:0] row,
+    output reg [7:0] pixels
+);
+
+    always @(*) begin
+        case ({char, row})
+            // Пример символа '0'
+            12'h00: pixels = 8'b00111100;
+            12'h01: pixels = 8'b01000010;
+            12'h02: pixels = 8'b01000010;
+            12'h03: pixels = 8'b01000010;
+            12'h04: pixels = 8'b01000010;
+            12'h05: pixels = 8'b01000010;
+            12'h06: pixels = 8'b01000010;
+            12'h07: pixels = 8'b00111100;
+            // ...
+            // Пример символа 'F'
+            12'hF8: pixels = 8'b01111110;
+            12'hF9: pixels = 8'b01000000;
+            12'hFA: pixels = 8'b01000000;
+            12'hFB: pixels = 8'b01111100;
+            12'hFC: pixels = 8'b01000000;
+            12'hFD: pixels = 8'b01000000;
+            12'hFE: pixels = 8'b01000000;
+            12'hFF: pixels = 8'b01000000;
+            default: pixels = 8'b00000000;
+        endcase
+    end
+
+endmodule

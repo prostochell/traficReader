@@ -1,0 +1,77 @@
+------------------------------------------------------------
+TimeQuest Timing Analyzer Summary
+------------------------------------------------------------
+
+Type  : Slow 1200mV 85C Model Setup 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : -6.034
+TNS   : -170.872
+
+Type  : Slow 1200mV 85C Model Setup 'clk'
+Slack : -1.590
+TNS   : -29.118
+
+Type  : Slow 1200mV 85C Model Hold 'clk'
+Slack : 0.434
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Hold 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : 0.450
+TNS   : 0.000
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : -3.201
+TNS   : -100.537
+
+Type  : Slow 1200mV 85C Model Minimum Pulse Width 'clk'
+Slack : -3.000
+TNS   : -43.149
+
+Type  : Slow 1200mV 0C Model Setup 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : -5.367
+TNS   : -155.580
+
+Type  : Slow 1200mV 0C Model Setup 'clk'
+Slack : -1.380
+TNS   : -25.286
+
+Type  : Slow 1200mV 0C Model Hold 'clk'
+Slack : 0.384
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Hold 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : 0.427
+TNS   : 0.000
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : -3.201
+TNS   : -100.537
+
+Type  : Slow 1200mV 0C Model Minimum Pulse Width 'clk'
+Slack : -3.000
+TNS   : -43.149
+
+Type  : Fast 1200mV 0C Model Setup 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : -1.982
+TNS   : -39.256
+
+Type  : Fast 1200mV 0C Model Setup 'clk'
+Slack : -0.136
+TNS   : -0.386
+
+Type  : Fast 1200mV 0C Model Hold 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : 0.091
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Hold 'clk'
+Slack : 0.179
+TNS   : 0.000
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'clk'
+Slack : -3.000
+TNS   : -38.222
+
+Type  : Fast 1200mV 0C Model Minimum Pulse Width 'vga_display:display_unit|clk_divider:divider|clk_out'
+Slack : -1.000
+TNS   : -63.000
+
+------------------------------------------------------------

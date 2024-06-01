@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="vga_display">
+		<CBX_INST_ENTRY INSTANCE_NAME="|top_module|vga_display:display_unit|altsyncram:text_buffer_rtl_0" CBX_FILE_NAME="altsyncram_mpg1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|top_module|vga_display:display_unit|lpm_divide:Mod0" CBX_FILE_NAME="lpm_divide_p9m.tdf"/>
+	</PROJECT>
+</LOG_ROOT>
