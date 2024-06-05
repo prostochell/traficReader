@@ -34,20 +34,20 @@ module vga_display (
         .pixels(pixels)
     );
 
-    reg [7:0] text_buffer [0:79]; // Буфер для одной строки, длина 80 символов
-    reg [6:0] write_pointer; // Указатель записи в буфер
-    reg [7:0] prev_spi_data; // Предыдущие данные
+    reg [7:0] text_buffer [0:79]; 
+    reg [6:0] write_pointer; 
+    reg [7:0] prev_spi_data; 
     reg [3:0] char;
 
     always @(posedge clk_25mhz) begin
         if (new_data && (spi_data != prev_spi_data)) begin
             text_buffer[write_pointer] <= spi_data;
-            write_pointer <= (write_pointer + 1) % 80; // Инкремент указателя
-            prev_spi_data <= spi_data; // Обновляем предыдущие данные
+            write_pointer <= (write_pointer + 1) % 80;
+            prev_spi_data <= spi_data;
         end
 
         if (video_on) begin
-            char <= text_buffer[x[6:3]]; // Получаем символ из буфера
+            char <= text_buffer[x[6:3]]; 
             row <= y[3:0];
         end
     end
