@@ -1,3 +1,4 @@
+
 module spi_master (
     input wire clk,
     input wire start,
@@ -18,7 +19,7 @@ module spi_master (
                DONE = 2'b10;
 
     assign sck = clk;
-    assign mosi = 1'b0; // Обычно мастер передает какие-то данные, но в данном случае мы только читаем
+    assign mosi = 1'b0;
 
     always @(posedge clk) begin
         case (state)
@@ -28,13 +29,13 @@ module spi_master (
                 if (start) begin
                     state <= TRANSFER;
                     bit_count <= 3'b111;
-                    shift_reg <= 8'b0; // Начинаем с нуля
+                    shift_reg <= 8'b0;
                     ss <= 1'b0;
                 end
             end
             
             TRANSFER: begin
-                shift_reg[bit_count] <= miso; // Чтение данных от Slave
+                shift_reg[bit_count] <= miso; 
                 if (bit_count == 3'b000) begin
                     state <= DONE;
                 end else begin

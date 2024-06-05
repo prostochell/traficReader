@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP4CE6E22) Path("D:/Kursach/Test VGA/output_files/") File("vga_display.sof") MfrSpec(OpMask(1));
+		Device PartName(EP4CE6E22) Path("D:/Kursach/traficReader/output_files/") File("vga_display.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 
